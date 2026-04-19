@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
 
 interface SnippetFormProps {
   snippet?: Snippet
-  onSave: (data: Omit<Snippet, "id" | "createdAt" | "updatedAt" | "versions">) => void
+  onSave: (data: Omit<Snippet, "id" | "createdAt" | "updatedAt" | "versions">) => void | Promise<void>
   onCancel: () => void
   theme?: "dark" | "light"
 }

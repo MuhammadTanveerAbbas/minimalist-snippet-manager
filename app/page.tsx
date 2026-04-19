@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useRef, useCallback } from "react"
 import type { Snippet } from "@/lib/types"
 import { useSnippets } from "@/hooks/use-snippets"
@@ -25,6 +27,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Code2 } from "lucide-react"
+import { AuthModal } from "@/components/auth-modal"
+import { createClient } from "@/lib/supabase/client"
 
 export default function HomePage() {
   const { theme, toggleTheme } = useTheme()
@@ -50,6 +54,7 @@ export default function HomePage() {
   const [editingSnippet, setEditingSnippet] = useState<Snippet | null>(null)
   const [viewingSnippet, setViewingSnippet] = useState<Snippet | null>(null)
   const [deletingSnippetId, setDeletingSnippetId] = useState<string | null>(null)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
   const searchInputRef = useRef<HTMLInputElement | null>(null)
 
   const snippetCounts = getSnippetCounts(allSnippets)
@@ -61,7 +66,10 @@ export default function HomePage() {
     (filters.tags && filters.tags.length > 0) ||
     !!filters.visibility
 
-  const handleNewSnippet = useCallback(() => {
+  const handleNewSnippet = useCallback(async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setAuthModalOpen(true); return }
     setEditingSnippet(null)
     setFormOpen(true)
   }, [])
@@ -73,11 +81,11 @@ export default function HomePage() {
   }, [])
 
   const handleSaveSnippet = useCallback(
-    (data: Omit<Snippet, "id" | "createdAt" | "updatedAt" | "versions">) => {
+    async (data: Omit<Snippet, "id" | "createdAt" | "updatedAt" | "versions">) => {
       if (editingSnippet) {
-        updateSnippet(editingSnippet.id, data)
+        await updateSnippet(editingSnippet.id, data)
       } else {
-        createSnippet(data)
+        await createSnippet(data)
       }
       setFormOpen(false)
       setEditingSnippet(null)
@@ -86,8 +94,8 @@ export default function HomePage() {
   )
 
   const handleDeleteSnippet = useCallback(
-    (id: string) => {
-      deleteSnippet(id)
+    async (id: string) => {
+      await deleteSnippet(id)
       setDeletingSnippetId(null)
       setViewingSnippet(null)
     },
@@ -95,31 +103,17 @@ export default function HomePage() {
   )
 
   const handleDuplicateSnippet = useCallback(
-    (id: string) => {
-      duplicateSnippet(id)
+    async (id: string) => {
+      await duplicateSnippet(id)
       setViewingSnippet(null)
     },
     [duplicateSnippet]
   )
 
   useKeyboardShortcuts([
-    {
-      key: "n",
-      ctrl: true,
-      description: "Create new snippet",
-      handler: handleNewSnippet,
-    },
-    {
-      key: "k",
-      ctrl: true,
-      description: "Focus search",
-      handler: () => searchInputRef.current?.focus(),
-    },
-    {
-      key: "/",
-      description: "Focus search",
-      handler: () => searchInputRef.current?.focus(),
-    },
+    { key: "n", ctrl: true, description: "Create new snippet", handler: () => handleNewSnippet() },
+    { key: "k", ctrl: true, description: "Focus search", handler: () => searchInputRef.current?.focus() },
+    { key: "/", description: "Focus search", handler: () => searchInputRef.current?.focus() },
     {
       key: "Escape",
       description: "Close dialogs",
@@ -188,7 +182,6 @@ export default function HomePage() {
               hasFilters={hasFilters}
             />
           </div>
-
         </main>
       </div>
 
@@ -215,6 +208,8 @@ export default function HomePage() {
         onDuplicate={() => viewingSnippet && handleDuplicateSnippet(viewingSnippet.id)}
         theme={theme}
       />
+
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
 
       <AlertDialog open={!!deletingSnippetId} onOpenChange={(open) => { if (!open) setDeletingSnippetId(null) }}>
         <AlertDialogContent>

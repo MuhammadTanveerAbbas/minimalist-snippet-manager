@@ -19,7 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface ExportImportDialogProps {
   onExportJSON: () => string
-  onImportJSON: (json: string) => { success: boolean; count: number; error?: string }
+  onImportJSON: (json: string) => Promise<{ success: boolean; count: number; error?: string }>
   onExportGist: () => { description: string; public: boolean; files: Record<string, { content: string }> }
 }
 
@@ -44,8 +44,8 @@ export function ExportImportDialog({ onExportJSON, onImportJSON, onExportGist }:
     URL.revokeObjectURL(url)
   }
 
-  const handleImportJSON = () => {
-    const result = onImportJSON(importText)
+  const handleImportJSON = async () => {
+    const result = await onImportJSON(importText)
     if (result.success) {
       setImportResult({
         success: true,
