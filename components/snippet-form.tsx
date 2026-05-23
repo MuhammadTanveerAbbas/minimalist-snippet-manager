@@ -33,6 +33,7 @@ export function SnippetForm({ snippet, onSave, onCancel, theme = "dark" }: Snipp
   const [tags, setTags] = useState<string[]>(snippet?.tags ?? [])
   const [showVersions, setShowVersions] = useState(false)
   const [titleError, setTitleError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   const languages = Object.keys(LANGUAGE_NAMES) as Language[]
 
@@ -46,12 +47,18 @@ export function SnippetForm({ snippet, onSave, onCancel, theme = "dark" }: Snipp
 
   const handleRemoveTag = (tag: string) => setTags(tags.filter((t) => t !== tag))
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim()) { setTitleError("Title is required."); return }
     if (!code.trim()) return
+    if (submitting) return
     setTitleError("")
-    onSave({ title: title.trim(), description: description.trim(), code, language, category: category.trim(), visibility, tags })
+    setSubmitting(true)
+    try {
+      await onSave({ title: title.trim(), description: description.trim(), code, language, category: category.trim(), visibility, tags })
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const isValid = title.trim() && code.trim()
@@ -218,7 +225,7 @@ export function SnippetForm({ snippet, onSave, onCancel, theme = "dark" }: Snipp
           </p>
           <div className="flex gap-2 ml-auto">
             <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
-            <Button type="submit" size="sm" variant="secondary" className="gap-2" disabled={!isValid}>
+            <Button type="submit" size="sm" variant="secondary" className="gap-2" disabled={!isValid || submitting}>
               <Save className="h-3.5 w-3.5" />
               {snippet ? "Save Changes" : "Save Snippet"}
             </Button>

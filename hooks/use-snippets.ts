@@ -27,14 +27,17 @@ export function useSnippets() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('Failed to load snippets:', error.message)
+        return
+      }
       if (mounted) {
         setSnippets((data ?? []).map(dbToSnippet))
         setIsLoaded(true)
       }
     }
 
-    load().catch(console.error)
+    load()
     return () => { mounted = false }
   }, [])
 
@@ -204,18 +207,19 @@ export function useSnippets() {
 }
 
 function dbToSnippet(row: Record<string, unknown>): Snippet {
+  const visibility = row.visibility as string
   return {
-    id: row.id as string,
-    title: row.title as string,
-    description: (row.description as string) ?? "",
-    code: row.code as string,
-    language: row.language as Snippet["language"],
-    tags: (row.tags as string[]) ?? [],
-    category: (row.category as string) ?? "",
-    visibility: (row.visibility as "public" | "private") ?? "private",
-    createdAt: row.created_at as string,
-    updatedAt: row.updated_at as string,
-    versions: (row.versions as SnippetVersion[]) ?? [],
+    id: String(row.id ?? ''),
+    title: String(row.title ?? ''),
+    description: String(row.description ?? ''),
+    code: String(row.code ?? ''),
+    language: String(row.language ?? 'javascript') as Snippet["language"],
+    tags: Array.isArray(row.tags) ? row.tags as string[] : [],
+    category: String(row.category ?? ''),
+    visibility: visibility === 'public' || visibility === 'private' ? visibility : 'private',
+    createdAt: String(row.created_at ?? ''),
+    updatedAt: String(row.updated_at ?? ''),
+    versions: Array.isArray(row.versions) ? row.versions as SnippetVersion[] : [],
   }
 }
 

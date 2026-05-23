@@ -8,12 +8,30 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://your-domain.com'
+
 export const metadata: Metadata = {
-  title: "Snippet Manager  Developer Code Library",
+  title: "Snippet Manager - Developer Code Library",
   description:
     "A powerful code snippet manager with syntax highlighting, tagging, version history, and advanced search for developers.",
+  metadataBase: new URL(siteUrl),
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "Snippet Manager",
+    title: "Snippet Manager - Developer Code Library",
+    description:
+      "A powerful code snippet manager with syntax highlighting, tagging, version history, and advanced search for developers.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Snippet Manager - Developer Code Library",
+    description:
+      "A powerful code snippet manager with syntax highlighting, tagging, version history, and advanced search for developers.",
   },
 }
 

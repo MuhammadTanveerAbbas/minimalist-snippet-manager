@@ -229,7 +229,8 @@ export function SearchBar({ filters, onFiltersChange, allTags, allCategories, se
               #{tag}
               <button
                 onClick={() => {
-                  const next = filters.tags!.filter((t) => t !== tag)
+                  const current = filters.tags ?? []
+                  const next = current.filter((t) => t !== tag)
                   onFiltersChange({ ...filters, tags: next.length > 0 ? next : undefined })
                 }}
                 className="hover:text-destructive"
