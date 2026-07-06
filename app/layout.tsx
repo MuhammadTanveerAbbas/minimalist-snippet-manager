@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist_Mono } from "next/font/google"
+import { ThemeInit } from "@/components/theme-init"
 import "./globals.css"
 
 const geistMono = Geist_Mono({
@@ -8,7 +9,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://your-domain.com'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://minimalist-snippet-manager.vercel.app'
 
 export const metadata: Metadata = {
   title: "Snippet Manager - Developer Code Library",
@@ -44,7 +45,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistMono.variable} font-mono antialiased`}>{children}</body>
+      <body className={`${geistMono.variable} font-mono antialiased`}>
+        <ThemeInit />
+        {children}
+      </body>
     </html>
   )
 }

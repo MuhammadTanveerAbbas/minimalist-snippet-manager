@@ -77,7 +77,7 @@ export function Header({
           <h1 className="text-lg font-bold sm:hidden">Snippets</h1>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-0.5 sm:gap-2 shrink-0 min-w-0">
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <ExportImportDialog
             onExportJSON={onExportJSON}
@@ -85,12 +85,12 @@ export function Header({
             onExportGist={onExportGist}
           />
           <KeyboardShortcutsDialog />
-          <Button onClick={onNewSnippet} size="sm" variant="secondary" className="gap-1 sm:gap-2">
+          <Button onClick={onNewSnippet} size="sm" variant="secondary" className="gap-1 sm:gap-2 shrink-0 min-h-9">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">New Snippet</span>
             <span className="sm:hidden">New</span>
           </Button>
-          <Button onClick={handleLogout} size="sm" variant="ghost" className="gap-1 sm:gap-2" title="Sign out">
+          <Button onClick={handleLogout} size="sm" variant="ghost" className="gap-1 sm:gap-2 shrink-0 min-h-9" title="Sign out">
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Sign out</span>
           </Button>

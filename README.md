@@ -26,11 +26,11 @@ Snippet Manager is a developer-focused tool for organizing, searching, and reusi
 ## ✨ Features
 
 - 🚀 **Create, Edit, Duplicate & Delete**  Full CRUD for all your code snippets in one place
-- 🎨 **Syntax Highlighting for 35+ Languages**  Powered by CodeMirror 6 with GitHub and One Dark themes
+- 🎨 **Syntax Highlighting for 36 Languages**  Powered by CodeMirror 6 with GitHub and One Dark themes
 - 🕓 **Version History**  Up to 10 previous versions per snippet with one-click restore
 - 🔍 **Live Full-Text Search**  Search across title, description, code, and tags with optional regex support
 - 🏷️ **Tags, Categories & Filters**  Filter by language, category, tags, and visibility
-- 🌗 **Dark / Light Theme**  Persistent theme toggle via `next-themes`
+- 🌗 **Dark / Light Theme**  Persistent theme toggle saved in localStorage
 - 📤 **Export as JSON or GitHub Gist**  Share or back up your entire snippet library
 - 📥 **Import from JSON**  Duplicate IDs are automatically resolved on import
 - 📱 **Fully Responsive**  Mobile sidebar via slide-out sheet
@@ -98,14 +98,12 @@ minimalist-snippet-manager/
 ├── public/
 │   └── icon.svg                        # Custom terminal-style SVG favicon
 ├── app/
-│   ├── (protected)/
-│   │   └── layout.tsx                  # Auth-guarded layout for protected routes
 │   ├── auth/
 │   │   └── callback/                   # Supabase OAuth callback handler
 │   ├── login/
 │   │   └── page.tsx                    # Login page
-│   ├── layout.tsx                      # Root layout  fonts, metadata, favicon
-│   ├── page.tsx                        # Main page  orchestrates all state and dialogs
+│   ├── layout.tsx                      # Root layout — fonts, metadata, theme init
+│   ├── page.tsx                        # Main dashboard — snippet CRUD and filters
 │   ├── loading.tsx                     # Route-level loading UI
 │   └── globals.css                     # CSS variables, dark/light theme tokens
 ├── components/
@@ -120,15 +118,14 @@ minimalist-snippet-manager/
 │   ├── code-editor.tsx                 # CodeMirror wrapper with copy button
 │   ├── export-import-dialog.tsx        # JSON and Gist export/import
 │   ├── keyboard-shortcuts-dialog.tsx   # Shortcut reference modal
-│   ├── theme-provider.tsx              # next-themes provider wrapper
+│   ├── theme-init.tsx                  # Applies saved theme on every route
 │   ├── theme-toggle.tsx                # Dark/light toggle button
 │   └── ui/                             # shadcn/ui primitives
 ├── hooks/
 │   ├── use-snippets.ts                 # CRUD state management + import/export
 │   ├── use-theme.ts                    # Theme toggle helper
 │   ├── use-keyboard-shortcuts.ts       # Global keyboard shortcut registration
-│   ├── use-mobile.ts                   # Responsive breakpoint detection
-│   └── use-toast.ts                    # Toast notification hook
+│   └── use-mobile.ts                   # Responsive breakpoint detection (768px)
 ├── lib/
 │   ├── supabase/
 │   │   ├── client.ts                   # Supabase browser client
@@ -156,6 +153,7 @@ minimalist-snippet-manager/
 | `pnpm build` | Build for production |
 | `pnpm start` | Start production server |
 | `pnpm lint` | Run ESLint |
+| `pnpm typecheck` | Run TypeScript type check |
 
 ---
 
@@ -188,7 +186,7 @@ This project is deployed on **Vercel**.
 ## 🗺 Roadmap
 
 - [x] Full CRUD for snippets
-- [x] Syntax highlighting for 35+ languages
+- [x] Syntax highlighting for 36 languages
 - [x] Version history with restore
 - [x] Live full-text search with regex support
 - [x] JSON and GitHub Gist export/import

@@ -1,27 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useSyncExternalStore } from "react"
 
 type Theme = "dark" | "light"
 
 const THEME_KEY = "snippet-manager-theme"
+const THEME_EVENT = "snippet-manager-theme-change"
+
+function getThemeSnapshot(): Theme {
+  const stored = localStorage.getItem(THEME_KEY) as Theme | null
+  return stored ?? "dark"
+}
+
+function subscribe(onStoreChange: () => void) {
+  window.addEventListener(THEME_EVENT, onStoreChange)
+  return () => window.removeEventListener(THEME_EVENT, onStoreChange)
+}
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>("dark")
+  const theme = useSyncExternalStore(subscribe, getThemeSnapshot, () => "dark" as Theme)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(THEME_KEY) as Theme | null
-    const resolved = stored ?? "dark"
-    setTheme(resolved)
-    document.documentElement.classList.toggle("dark", resolved === "dark")
-  }, [])
-
-  const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark"
-    setTheme(next)
+  const toggleTheme = useCallback(() => {
+    const next: Theme = getThemeSnapshot() === "dark" ? "light" : "dark"
     localStorage.setItem(THEME_KEY, next)
     document.documentElement.classList.toggle("dark", next === "dark")
-  }
+    window.dispatchEvent(new Event(THEME_EVENT))
+  }, [])
 
   return { theme, toggleTheme }
 }

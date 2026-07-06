@@ -1,8 +1,12 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { LANGUAGE_COUNT } from '@/lib/editor-languages'
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
+  const authError = searchParams.get('error')
   const supabase = createClient()
 
   const signInWithGoogle = async () => {
@@ -12,9 +16,14 @@ export default function LoginPage() {
     })
   }
 
+  const features = [
+    `Syntax highlighting for ${LANGUAGE_COUNT} languages`,
+    'Version history with one-click restore',
+    'Full-text search with regex support',
+  ]
+
   return (
     <div className="h-screen flex items-center justify-center bg-background px-4">
-      {/* Subtle grid background */}
       <div
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
         style={{
@@ -24,7 +33,6 @@ export default function LoginPage() {
       />
 
       <div className="relative flex flex-col items-center gap-8 w-full max-w-sm">
-        {/* Logo + brand */}
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl" />
@@ -35,6 +43,7 @@ export default function LoginPage() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="relative"
+              aria-hidden
             >
               <rect width="34" height="34" rx="9" className="fill-foreground" />
               <circle cx="8" cy="8.5" r="2" className="fill-background" opacity="0.35" />
@@ -61,18 +70,24 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Card */}
         <div className="w-full rounded-2xl border border-border bg-card p-6 space-y-5">
           <div className="space-y-1">
             <h2 className="text-base font-semibold">Welcome back</h2>
             <p className="text-xs text-muted-foreground">Sign in to access your snippets</p>
           </div>
 
+          {authError && (
+            <p className="text-xs text-destructive rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2">
+              {authError}
+            </p>
+          )}
+
           <button
+            type="button"
             onClick={signInWithGoogle}
-            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-lg border border-border bg-background hover:bg-muted/60 active:scale-[0.98] transition-all text-sm font-medium"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 min-h-11 rounded-lg border border-border bg-background hover:bg-muted/60 active:scale-[0.98] transition-all text-sm font-medium"
           >
-            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden>
               <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
               <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853" />
               <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05" />
@@ -83,16 +98,12 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground/50">features</span>
+            <span className="text-xs text-muted-foreground/50">Features</span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
           <ul className="space-y-2">
-            {[
-              "Syntax highlighting for 35+ languages",
-              "Version history with one-click restore",
-              "Full-text search with regex support",
-            ].map((f) => (
+            {features.map((f) => (
               <li key={f} className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span className="h-1 w-1 rounded-full bg-primary shrink-0" />
                 {f}
@@ -101,8 +112,8 @@ export default function LoginPage() {
           </ul>
         </div>
 
-        <p className="text-xs text-muted-foreground/50">
-          Free forever · No credit card required
+        <p className="text-xs text-muted-foreground/50 text-center">
+          Sign in with Google — no payment required
         </p>
       </div>
     </div>

@@ -93,3 +93,5 @@ export const LANGUAGE_NAMES: Record<Language, string> = {
   haskell: "Haskell",
   lua: "Lua",
 }
+
+export const LANGUAGE_COUNT = Object.keys(LANGUAGE_NAMES).length

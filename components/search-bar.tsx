@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -23,20 +22,16 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ filters, onFiltersChange, allTags, allCategories, searchInputRef }: SearchBarProps) {
-  const [localSearch, setLocalSearch] = useState(filters.search ?? "")
-
-  useEffect(() => {
-    if (!filters.search) setLocalSearch("")
-  }, [filters.search])
+  const search = filters.search ?? ""
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
-    setLocalSearch(val)
     onFiltersChange({ ...filters, search: val || undefined })
   }
 
+  const clearSearch = () => onFiltersChange({ ...filters, search: undefined })
+
   const clearFilters = () => {
-    setLocalSearch("")
     onFiltersChange({})
   }
 
@@ -56,16 +51,16 @@ export function SearchBar({ filters, onFiltersChange, allTags, allCategories, se
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             ref={searchInputRef}
-            value={localSearch}
+            value={search}
             onChange={handleSearchChange}
             placeholder="Search snippets..."
             className="pl-9 pr-9 bg-muted/40 border-border/60 focus:bg-background"
           />
-          {localSearch && (
+          {search && (
             <button
               type="button"
-              onClick={() => { setLocalSearch(""); onFiltersChange({ ...filters, search: undefined }) }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              onClick={clearSearch}
+              className="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -73,7 +68,7 @@ export function SearchBar({ filters, onFiltersChange, allTags, allCategories, se
         </div>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon" className={cn("shrink-0 bg-muted/40 border-border/60", hasActiveFilters && "border-foreground/30 bg-secondary")}>
+            <Button variant="outline" size="icon" className={cn("shrink-0 min-h-9 min-w-9 bg-muted/40 border-border/60", hasActiveFilters && "border-foreground/30 bg-secondary")}>
               <Filter className="h-4 w-4" />
               {hasActiveFilters && (
                 <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-foreground" />
@@ -195,7 +190,7 @@ export function SearchBar({ filters, onFiltersChange, allTags, allCategories, se
           {filters.search && (
             <Badge variant="secondary" className="gap-1 text-xs">
               &ldquo;{filters.search}&rdquo;
-              <button onClick={() => { setLocalSearch(""); onFiltersChange({ ...filters, search: undefined }) }} className="hover:text-destructive">
+              <button onClick={clearSearch} className="hover:text-destructive">
                 <X className="h-3 w-3" />
               </button>
             </Badge>

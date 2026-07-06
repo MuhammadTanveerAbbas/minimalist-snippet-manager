@@ -4,7 +4,6 @@ import type { Snippet } from "@/lib/types"
 import { LANGUAGE_NAMES } from "@/lib/editor-languages"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash2, Eye, EyeOff, Copy } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -25,14 +24,14 @@ export function SnippetCard({ snippet, onEdit, onDelete, onDuplicate, onClick }:
         className="absolute top-3 right-3 flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
         onClick={(e) => e.stopPropagation()}
       >
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onDuplicate} title="Duplicate">
-          <Copy className="h-3 w-3" />
+        <Button size="icon" variant="ghost" className="h-10 w-10 sm:h-8 sm:w-8" onClick={onDuplicate} title="Duplicate">
+          <Copy className="h-3.5 w-3.5" />
         </Button>
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onEdit} title="Edit">
-          <Edit className="h-3 w-3" />
+        <Button size="icon" variant="ghost" className="h-10 w-10 sm:h-8 sm:w-8" onClick={onEdit} title="Edit">
+          <Edit className="h-3.5 w-3.5" />
         </Button>
-        <Button size="icon" variant="ghost" className="h-6 w-6 hover:text-destructive" onClick={onDelete} title="Delete">
-          <Trash2 className="h-3 w-3" />
+        <Button size="icon" variant="ghost" className="h-10 w-10 sm:h-8 sm:w-8 hover:text-destructive" onClick={onDelete} title="Delete">
+          <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
 

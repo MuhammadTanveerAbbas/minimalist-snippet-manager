@@ -19,7 +19,13 @@ export function useSnippets() {
 
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) {
+        if (mounted) {
+          setSnippets([])
+          setIsLoaded(true)
+        }
+        return
+      }
 
       const { data, error } = await supabase
         .from("snippets")
@@ -28,7 +34,10 @@ export function useSnippets() {
         .order("created_at", { ascending: false })
 
       if (error) {
-        console.error('Failed to load snippets:', error.message)
+        if (mounted) {
+          setSnippets([])
+          setIsLoaded(true)
+        }
         return
       }
       if (mounted) {
@@ -38,7 +47,20 @@ export function useSnippets() {
     }
 
     load()
-    return () => { mounted = false }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        setSnippets([])
+        setIsLoaded(true)
+        return
+      }
+      load()
+    })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const filteredSnippets = filterSnippets(snippets, filters)

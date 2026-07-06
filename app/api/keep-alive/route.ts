@@ -15,7 +15,6 @@ export async function GET(request: Request) {
   const { error } = await supabase.from('snippets').select('id').limit(1)
 
   if (error) {
-    console.error('Keep-alive check failed:', error.message)
     return new NextResponse('Keep-alive failed', { status: 500 })
   }
 

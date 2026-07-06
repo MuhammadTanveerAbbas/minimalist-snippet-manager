@@ -92,22 +92,22 @@ export function ExportImportDialog({ onExportJSON, onImportJSON, onExportGist }:
       <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileUpload} className="hidden" aria-hidden />
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="gap-2 bg-transparent">
+          <Button variant="outline" size="icon" className="shrink-0 bg-transparent sm:size-auto sm:px-4 sm:gap-2 sm:min-h-9" title="Export / Import">
             <Download className="h-4 w-4" />
-            Export / Import
+            <span className="hidden sm:inline">Export / Import</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-xl w-[calc(100vw-2rem)] max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Export &amp; Import</DialogTitle>
             <DialogDescription>Back up your snippets or restore from a previous export.</DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="export" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="export">Export JSON</TabsTrigger>
-              <TabsTrigger value="import">Import JSON</TabsTrigger>
-              <TabsTrigger value="gist">GitHub Gist</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 h-auto">
+              <TabsTrigger value="export" className="text-xs sm:text-sm px-1 sm:px-3 py-2">Export</TabsTrigger>
+              <TabsTrigger value="import" className="text-xs sm:text-sm px-1 sm:px-3 py-2">Import</TabsTrigger>
+              <TabsTrigger value="gist" className="text-xs sm:text-sm px-1 sm:px-3 py-2">Gist</TabsTrigger>
             </TabsList>
 
             <TabsContent value="export" className="space-y-4 pt-2">
